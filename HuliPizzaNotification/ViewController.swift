@@ -7,39 +7,55 @@
 //
 
 import UIKit
+import UserNotifications
 
 class ViewController: UIViewController {
-
-    @IBAction func schedulePizza(_ sender: UIButton) {
+  
+  // property to store access status
+  var isGrantedNotificationAccess = true
+  
+  @IBAction func schedulePizza(_ sender: UIButton) {
+    if isGrantedNotificationAccess {
+      // TODO: Do something
     }
-    @IBAction func makePizza(_ sender: UIButton) {
+  }
+  @IBAction func makePizza(_ sender: UIButton) {
+    if isGrantedNotificationAccess {
+      // TODO: Do something
     }
-    
-    @IBAction func nextPizzaStep(_ sender: UIButton) {
+  }
+  
+  @IBAction func nextPizzaStep(_ sender: UIButton) {
+  }
+  
+  @IBAction func viewPendingPizzas(_ sender: UIButton) {
+  }
+  
+  @IBAction func viewDeliveredPizzas(_ sender: UIButton) {
+  }
+  
+  @IBAction func removeNotification(_ sender: UIButton) {
+  }
+  
+  
+  
+  
+  override func viewDidLoad() {
+    super.viewDidLoad()
+    // request authorization method could also be placed in AppDelegate
+    UNUserNotificationCenter.current().requestAuthorization(options: [.alert, .badge, .sound]) { (granted, error) in
+      self.isGrantedNotificationAccess = granted
+      if !granted {
+        // add alert to persuade user
+      }
     }
-    
-    @IBAction func viewPendingPizzas(_ sender: UIButton) {
-    }
-    
-    @IBAction func viewDeliveredPizzas(_ sender: UIButton) {
-    }
-    
-    @IBAction func removeNotification(_ sender: UIButton) {
-    }
-    
-    
-    
-    
-    override func viewDidLoad() {
-        super.viewDidLoad()
-        // Do any additional setup after loading the view, typically from a nib.
-    }
-
-    override func didReceiveMemoryWarning() {
-        super.didReceiveMemoryWarning()
-        // Dispose of any resources that can be recreated.
-    }
-
-
+  }
+  
+  override func didReceiveMemoryWarning() {
+    super.didReceiveMemoryWarning()
+    // Dispose of any resources that can be recreated.
+  }
+  
+  
 }
 
