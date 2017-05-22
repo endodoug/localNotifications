@@ -29,11 +29,18 @@ class ViewController: UIViewController {
       let content = UNMutableNotificationContent()
       content.title = "A Scheduled Pizza"
       content.body = "Time to make a Pizza!!!"
+      
+      let unitFlags: Set<Calendar.Component> = [.minute, .hour, .second]
+      var date = Calendar.current.dateComponents(unitFlags, from: Date())
+      date.second = date.second! + 15
+      
+      let trigger = UNCalendarNotificationTrigger(dateMatching: date, repeats: false)
     }
   }
   @IBAction func makePizza(_ sender: UIButton) {
     if isGrantedNotificationAccess {
       let content = createPizzaContent()
+      let trigger = UNTimeIntervalNotificationTrigger(timeInterval: 10.0, repeats: false)
     }
   }
   
