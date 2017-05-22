@@ -14,14 +14,26 @@ class ViewController: UIViewController {
   // property to store access status
   var isGrantedNotificationAccess = true
   
+  // function to contain the content in my notification
+  func createPizzaContent() -> UNMutableNotificationContent {
+    let content = UNMutableNotificationContent()
+    content.title = "A Timed Pizza Step"
+    content.body = "Making Pizza"
+    content.userInfo = ["step": 0]
+    
+    return content
+  }
+  
   @IBAction func schedulePizza(_ sender: UIButton) {
     if isGrantedNotificationAccess {
-      // TODO: Do something
+      let content = UNMutableNotificationContent()
+      content.title = "A Scheduled Pizza"
+      content.body = "Time to make a Pizza!!!"
     }
   }
   @IBAction func makePizza(_ sender: UIButton) {
     if isGrantedNotificationAccess {
-      // TODO: Do something
+      let content = createPizzaContent()
     }
   }
   
