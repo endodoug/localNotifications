@@ -24,6 +24,16 @@ class ViewController: UIViewController {
     return content
   }
   
+  // Notification Request function
+  func addNotification(trigger: UNNotificationTrigger?, content: UNMutableNotificationContent, identifier: String) {
+    let request = UNNotificationRequest(identifier: identifier, content: content, trigger: trigger)
+    UNUserNotificationCenter.current().add(request) { (error) in
+      if error != nil {
+        print("error adding notification: \(String(describing: error?.localizedDescription))")
+      }
+    }
+  }
+  
   @IBAction func schedulePizza(_ sender: UIButton) {
     if isGrantedNotificationAccess {
       let content = UNMutableNotificationContent()
@@ -35,12 +45,15 @@ class ViewController: UIViewController {
       date.second = date.second! + 15
       
       let trigger = UNCalendarNotificationTrigger(dateMatching: date, repeats: false)
+      
+      addNotification(trigger: trigger, content: content, identifier: "message.schedule")
     }
   }
   @IBAction func makePizza(_ sender: UIButton) {
     if isGrantedNotificationAccess {
       let content = createPizzaContent()
       let trigger = UNTimeIntervalNotificationTrigger(timeInterval: 10.0, repeats: false)
+      addNotification(trigger: trigger, content: content, identifier: "message.pizza")
     }
   }
   
