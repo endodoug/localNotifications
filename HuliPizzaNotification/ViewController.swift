@@ -85,6 +85,11 @@ class ViewController: UIViewController {
   }
   
   @IBAction func removeNotification(_ sender: UIButton) {
+    UNUserNotificationCenter.current().getPendingNotificationRequests { (requests) in
+      if let request = requests.first {
+        UNUserNotificationCenter.current().removePendingNotificationRequests(withIdentifiers: [request.identifier])
+      }
+    }
   }
   
   
