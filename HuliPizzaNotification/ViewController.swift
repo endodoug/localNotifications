@@ -74,6 +74,8 @@ class ViewController: UIViewController {
   
   override func viewDidLoad() {
     super.viewDidLoad()
+    UNUserNotificationCenter.current().delegate = self
+    
     // request authorization method could also be placed in AppDelegate
     UNUserNotificationCenter.current().requestAuthorization(options: [.alert, .badge, .sound]) { (granted, error) in
       self.isGrantedNotificationAccess = granted
@@ -82,10 +84,14 @@ class ViewController: UIViewController {
       }
     }
   }
+}
+
+// MARK: - Delegates
+
+extension ViewController: UNUserNotificationCenterDelegate {
   
-  override func didReceiveMemoryWarning() {
-    super.didReceiveMemoryWarning()
-    // Dispose of any resources that can be recreated.
+  func userNotificationCenter(_ center: UNUserNotificationCenter, willPresent notification: UNNotification, withCompletionHandler completionHandler: @escaping (UNNotificationPresentationOptions) -> Void) {
+    completionHandler([.alert, .sound])
   }
   
   
