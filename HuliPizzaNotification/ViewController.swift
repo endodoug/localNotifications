@@ -14,6 +14,8 @@ class ViewController: UIViewController {
   // property to store access status
   var isGrantedNotificationAccess = true
   
+  var pizzaNumber = 0
+  
   // function to contain the content in my notification
   func createPizzaContent() -> UNMutableNotificationContent {
     let content = UNMutableNotificationContent()
@@ -52,18 +54,34 @@ class ViewController: UIViewController {
   @IBAction func makePizza(_ sender: UIButton) {
     if isGrantedNotificationAccess {
       let content = createPizzaContent()
+      pizzaNumber += 1
+      content.subtitle = "Pizza \(pizzaNumber)"
+      
       let trigger = UNTimeIntervalNotificationTrigger(timeInterval: 10.0, repeats: false)
-      addNotification(trigger: trigger, content: content, identifier: "message.pizza")
+      addNotification(trigger: trigger, content: content, identifier: "message.pizza.\(pizzaNumber)")
     }
   }
   
   @IBAction func nextPizzaStep(_ sender: UIButton) {
+    
   }
   
   @IBAction func viewPendingPizzas(_ sender: UIButton) {
+    UNUserNotificationCenter.current().getPendingNotificationRequests { (requestList) in
+      print("\(Date()) --> \(requestList.count) requests pending")
+      for request in requestList {
+        print("\(request.identifier) body: \(request.content.body)")
+      }
+    }
   }
   
   @IBAction func viewDeliveredPizzas(_ sender: UIButton) {
+    UNUserNotificationCenter.current().getDeliveredNotifications { (notifications) in
+      print("\(Date()) ---- \(notifications.count) delivered")
+      for notification in notifications {
+        print("\(notification.request.identifier)  \(notification.request.content.body)")
+      }
+    }
   }
   
   @IBAction func removeNotification(_ sender: UIButton) {
