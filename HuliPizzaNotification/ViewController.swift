@@ -12,9 +12,22 @@ import UserNotifications
 class ViewController: UIViewController {
   
   // property to store access status
-  var isGrantedNotificationAccess = true
+  var isGrantedNotificationAccess = false
   
   var pizzaNumber = 0
+  let pizzaSteps = ["Make Pizza", "Roll Dough", "Add Sauce", "Add Cheese", "Add Ingredients", "Bake", "Done"]
+  
+  func updatePizzaStep(request: UNNotificationRequest) {
+    if request.identifier.hasPrefix("message.pizza") {
+      var stepNumber = request.content.userInfo["step"] as! Int
+      stepNumber = (stepNumber + 1) % pizzaSteps.count
+      let updatedContent = createPizzaContent()
+      updatedContent.body = pizzaSteps[stepNumber]
+      updatedContent.userInfo[stepNumber] = stepNumber
+      updatedContent.subtitle = request.content.subtitle
+      addNotification(trigger: request.trigger, content: updatedContent, identifier: request.identifier)
+    }
+  }
   
   // function to contain the content in my notification
   func createPizzaContent() -> UNMutableNotificationContent {
@@ -63,7 +76,17 @@ class ViewController: UIViewController {
   }
   
   @IBAction func nextPizzaStep(_ sender: UIButton) {
-    
+    UNUserNotificationCenter.current().getPendingNotificationRequests { (requests)  in
+      if let request = requests.first {
+        self.updatePizzaStep(request: request)
+        if request.identifier.hasPrefix("message.pizza") {
+          self.updatePizzaStep(request: request)
+        } else {
+          let content = request.content.mutableCopy() as! UNMutableNotificationContent
+          self.addNotification(trigger: request.trigger!, content: content, identifier: request.identifier)
+        }
+      }
+    }
   }
   
   @IBAction func viewPendingPizzas(_ sender: UIButton) {
@@ -109,6 +132,20 @@ class ViewController: UIViewController {
   }
 }
 
+func setBadgeIndicator(badgeCount:Int)
+{
+  let application = UIApplication.shared
+  if #available(iOS 10.0, *) {
+    let center = UNUserNotificationCenter.current()
+    center.requestAuthorization(options:[.badge, .alert, .sound]) { (granted, error) in }
+  }
+  else{
+    application.registerUserNotificationSettings(UIUserNotificationSettings(types: [.alert, .badge, .sound], categories: nil))
+  }
+  application.registerForRemoteNotifications()
+  application.applicationIconBadgeNumber = badgeCount
+}
+
 // MARK: - Delegates
 
 extension ViewController: UNUserNotificationCenterDelegate {
@@ -116,7 +153,6 @@ extension ViewController: UNUserNotificationCenterDelegate {
   func userNotificationCenter(_ center: UNUserNotificationCenter, willPresent notification: UNNotification, withCompletionHandler completionHandler: @escaping (UNNotificationPresentationOptions) -> Void) {
     completionHandler([.alert, .sound])
   }
-  
-  
+
 }
 
